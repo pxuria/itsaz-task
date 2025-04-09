@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* @theme {
+  --base-white: #fff;
+  --orange: #ff7b2d;
+  --red: #ff4040;
+  --tint-02: #1e1e6e;
+  --tint-01: #ff7b2d;
+} */
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -112,9 +120,10 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply m-0 p-0 box-border;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-white;
   }
 }
