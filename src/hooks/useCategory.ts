@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axiosInstance";
 
 const fetchCategory = async () => {
-  const { data } = await axiosInstance.get("/category");
+  const { data } = await axiosInstance.get("products/category-list");
   return data;
 };
 

@@ -1,14 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* @theme {
-  --base-white: #fff;
-  --orange: #ff7b2d;
-  --red: #ff4040;
-  --tint-02: #1e1e6e;
-  --tint-01: #ff7b2d;
-} */
-
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -125,5 +117,15 @@
 
   body {
     @apply bg-white;
+  }
+}
+
+@layer utilities {
+  .flex_center_between {
+    @apply flex items-center justify-between;
+  }
+
+  .flex_center {
+    @apply flex items-center justify-center;
   }
 }

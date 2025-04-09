@@ -7,28 +7,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import axiosInstance from "@/lib/axiosInstance";
-import { useEffect } from "react";
+import { useCategories } from "@/hooks/useCategory";
 
 interface Props {
   label: string;
-  items: string[];
   placeholder: string;
 }
 
-const SelectBox = ({ label, items, placeholder }: Props) => {
-  useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const { data } = await axiosInstance.get("");
-        console.log(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+const SelectBox = ({ label, placeholder }: Props) => {
+  const { data: selectItems, isLoading, error } = useCategories();
 
-    fetchItems();
-  }, []);
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Something went wrong!</p>;
 
   return (
     <Select>
@@ -39,7 +29,7 @@ const SelectBox = ({ label, items, placeholder }: Props) => {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>{label}</SelectLabel>
-          {items.map((item, index) => (
+          {selectItems.map((item: string, index: number) => (
             <SelectItem key={index} value={item}>
               {item}
             </SelectItem>

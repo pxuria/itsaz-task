@@ -3,17 +3,16 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { IoNotifications } from "react-icons/io5";
 import { LuMail } from "react-icons/lu";
 import SelectBox from "@/components/shared/SelectBox";
+import DashboardTable from "@/components/shared/DashboardTable";
 
 const Home = () => {
-  const items = ["s"];
-
   return (
     <main className="w-full">
       <SidebarProvider>
         <SidebarLayout />
         <section className="px-9 w-full mt-8">
           {/* topbar */}
-          <div className="flex flex-row items-center justify-between">
+          <div className="flex_center_between">
             <div className=" flex items-center gap-2">
               <SidebarTrigger />
 
@@ -43,12 +42,31 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between mt-11">
-            <SelectBox
-              placeholder="انتخاب دسته بندی"
-              label="دسته بندی"
-              items={items}
-            />
+          {/* filters */}
+          <div className="flex_center_between mt-11">
+            <SelectBox placeholder="انتخاب دسته بندی" label="دسته بندی" />
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="text-white text-base text-nowrap font-semibold bg-[#FF7B2D] py-2 px-6 rounded min-w-[250px] text-center cursor-pointer"
+                onClick={() => console.log("first")}
+              >
+                اعمال فیلتر
+              </button>
+
+              <button
+                type="button"
+                className="text-white text-base text-nowrap font-semibold bg-[#FF4040] py-2 px-6 rounded min-w-[80px] text-center cursor-pointer"
+              >
+                حذف فیلتر
+              </button>
+            </div>
+          </div>
+
+          {/* table */}
+          <div className="mt-6">
+            <DashboardTable />
           </div>
         </section>
       </SidebarProvider>
