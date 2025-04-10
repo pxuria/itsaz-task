@@ -11,7 +11,7 @@ import { useState } from "react";
 
 const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const { data: products, error, isLoading } = useProducts();
+  const { data: products, error, isLoading } = useProducts("limit=10&skip=10");
   const location = useLocation();
 
   const pathname = location.pathname;
@@ -87,14 +87,14 @@ const Home = () => {
           </div>
 
           <div className="flex_center_between w-full my-4">
+            <div className="">{currentPage}</div>
+
             <DashboardPagination
               currentPage={currentPage}
               totalPages={1}
               searchParams={searchParams}
               pathname={pathname}
             />
-
-            <div className="">{currentPage}</div>
           </div>
         </section>
       </SidebarProvider>

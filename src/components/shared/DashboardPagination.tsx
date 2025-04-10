@@ -54,8 +54,8 @@ const DashboardPagination = ({
                   isActive={page === currentPage}
                   className={`${
                     page === currentPage
-                      ? "bg-pink_500 text-white"
-                      : "bg-light_muted hover:bg-muted text-black transition-all ease-in"
+                      ? "bg-primary text-white"
+                      : "bg-primary hover:bg-primary text-black transition-all ease-in"
                   } flex_center rounded w-8 h-8`}
                 >
                   {page}

@@ -9,6 +9,7 @@ import {
 import { dashboardTableHeaders } from "@/constants";
 import { IProducts } from "@/types";
 import { LuTrash2 } from "react-icons/lu";
+import LoadingSpinner from "./LoadingSpinner";
 
 interface Props {
   products: IProducts[];
@@ -18,7 +19,7 @@ interface Props {
 
 const DashboardTable = ({ products, error, isLoading }: Props) => {
   console.log(products);
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <LoadingSpinner color="#F67C2D" loading={isLoading} />;
   if (error) return <p>Something went wrong!</p>;
 
   return (
@@ -40,7 +41,7 @@ const DashboardTable = ({ products, error, isLoading }: Props) => {
             <TableCell className="">{item.title}</TableCell>
             <TableCell>{item.category}</TableCell>
             <TableCell>{item.price}</TableCell>
-            <TableCell>{item.brand}</TableCell>
+            <TableCell>{item.brand || "-"}</TableCell>
             <TableCell className="flex_center">
               <button
                 type="button"
