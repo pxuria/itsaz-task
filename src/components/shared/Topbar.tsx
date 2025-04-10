@@ -2,6 +2,20 @@ import { IoNotifications } from "react-icons/io5";
 import { SidebarTrigger } from "../ui/sidebar";
 import { LuMail } from "react-icons/lu";
 
+const IconButton = ({
+  children,
+  className = "",
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+  <button
+    type="button"
+    className={`p-2 rounded-md flex_center cursor-pointer ${className}`}
+    {...props}
+  >
+    {children}
+  </button>
+);
+
 const Topbar = () => {
   return (
     <div className="flex_center_between flex-wrap-reverse gap-4">
@@ -18,19 +32,13 @@ const Topbar = () => {
       </div>
 
       <div className="flex gap-2 items-center">
-        <button
-          className="p-2 rounded-md bg-[rgba(255,123,45,0.3)] cursor-pointer flex items-center justify-center"
-          type="button"
-        >
+        <IconButton className="bg-[rgba(255,123,45,0.3)]">
           <IoNotifications className="w-5 h-5 text-[#FF7B2D]" />
-        </button>
+        </IconButton>
 
-        <button
-          className="p-2 rounded-md bg-white outline-1 outline-amber-500 cursor-pointer flex items-center justify-center"
-          type="button"
-        >
+        <IconButton className="bg-white outline-1 outline-amber-500">
           <LuMail className="w-5 h-5 text-[#FF7B2D]" />
-        </button>
+        </IconButton>
       </div>
     </div>
   );

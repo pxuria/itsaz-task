@@ -56,10 +56,9 @@ const Home = () => {
     const params = new URLSearchParams();
     params.set("limit", DASHBOARD_DEFAULT_LIMIT.toString());
     params.set("skip", "0");
-
-    navigate("/");
-    setSearchParams(params);
     setSelectedCategory(null);
+    setSearchParams(params);
+    navigate("/");
   }, [navigate, setSearchParams]);
 
   const handlePageChange = useCallback(
@@ -68,9 +67,7 @@ const Home = () => {
       const params = new URLSearchParams(searchParams);
       params.set("skip", newSkip.toString());
       params.set("limit", validLimit.toString());
-      if (selectedCategory) {
-        params.set("category", selectedCategory);
-      }
+      if (selectedCategory) params.set("category", selectedCategory);
       setSearchParams(params);
     },
     [validLimit, searchParams, selectedCategory, setSearchParams]
@@ -78,12 +75,10 @@ const Home = () => {
 
   const handleApplyFilter = useCallback(() => {
     const params = new URLSearchParams(searchParams);
-    if (selectedCategory) {
-      params.set("category", selectedCategory);
-    } else {
-      params.delete("category");
-    }
-    params.set("skip", "0"); // reset to first page
+    if (selectedCategory) params.set("category", selectedCategory);
+    else params.delete("category");
+
+    params.set("skip", "0");
     setSearchParams(params);
   }, [searchParams, selectedCategory, setSearchParams]);
 
@@ -95,7 +90,6 @@ const Home = () => {
     setSearchParams(params);
   }, [searchParams, setSearchParams]);
 
-  // Sync state when URL changes (e.g., from browser nav)
   useEffect(() => {
     setSelectedCategory(searchParams.get("category"));
 
@@ -112,6 +106,20 @@ const Home = () => {
     if (needsUpdate) setSearchParams(params);
   }, [searchParams, setSearchParams]);
 
+  useEffect(() => {
+    const categoryInParams = searchParams.get("category");
+    if (selectedCategory !== categoryInParams) {
+      const params = new URLSearchParams(searchParams);
+      if (selectedCategory) {
+        params.set("category", selectedCategory);
+      } else {
+        params.delete("category");
+      }
+      params.set("skip", "0");
+      setSearchParams(params);
+    }
+  }, [searchParams, setSearchParams, selectedCategory]);
+
   return (
     <main
       className={`transition-all duration-300 ${
@@ -121,6 +129,7 @@ const Home = () => {
       <section className={`px-9 mt-8 w-full`}>
         {/* topbar */}
         <Topbar />
+
         {/* filters */}
         <div className="flex_center_between flex-wrap md:flex-nowrap gap-4 mt-11">
           <DashboardFilter

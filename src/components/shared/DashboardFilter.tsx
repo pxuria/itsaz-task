@@ -2,9 +2,9 @@ import { useCategories } from "@/hooks/useCategory";
 import SelectBox from "./SelectBox";
 
 interface FilterProps {
+  selectedCategory: string | null;
   handleClearFilter: () => void;
   handleApplyFilter: () => void;
-  selectedCategory: string | null;
   setSelectedCategory: (value: string) => void;
 }
 
@@ -16,6 +16,9 @@ const DashboardFilter = ({
 }: FilterProps) => {
   const { data, error, isLoading } = useCategories();
 
+  const buttonBaseStyle =
+    "text-white text-base font-semibold py-2 px-6 rounded w-full text-center cursor-pointer text-nowrap";
+
   return (
     <>
       <SelectBox
@@ -23,7 +26,7 @@ const DashboardFilter = ({
         label="دسته بندی"
         value={selectedCategory || ""}
         onValueChange={(value) => setSelectedCategory(value as string)}
-        data={data}
+        data={data || []}
         error={error}
         isLoading={isLoading}
       />
@@ -32,7 +35,7 @@ const DashboardFilter = ({
         <button
           type="button"
           onClick={handleApplyFilter}
-          className="text-white text-base text-nowrap font-semibold bg-[#FF7B2D] py-2 px-6 rounded w-full md:min-w-[250px] text-center cursor-pointer"
+          className={`${buttonBaseStyle} bg-[#FF7B2D] md:min-w-[250px]`}
         >
           اعمال فیلتر
         </button>
@@ -40,7 +43,7 @@ const DashboardFilter = ({
         <button
           type="button"
           onClick={handleClearFilter}
-          className="text-white text-base text-nowrap font-semibold bg-[#FF4040] py-2 px-6 rounded w-full md:min-w-[80px] text-center cursor-pointer"
+          className={`${buttonBaseStyle} bg-[#FF4040] md:min-w-[80px]`}
         >
           حذف فیلتر
         </button>
