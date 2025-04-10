@@ -11,24 +11,20 @@ import {
 interface Props {
   currentPage: number;
   totalPages: number;
-  pathname: string;
-  searchParams: string;
+  onPageChange: (page: number) => void;
 }
 
 const DashboardPagination = ({
   currentPage,
   totalPages,
-  pathname,
-  searchParams,
+  onPageChange,
 }: Props) => {
-  console.log(pathname);
-  console.log(searchParams);
   const pagesArray = [...Array(totalPages)].map((_, i) => i + 1);
 
-  const createPageUrl = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", page.toString());
-    return `${pathname}?${params.toString()}`;
+  const handlePageClick = (page: number) => {
+    if (page !== currentPage) {
+      onPageChange(page);
+    }
   };
 
   return (
@@ -37,10 +33,14 @@ const DashboardPagination = ({
         {/* next page */}
         {currentPage !== totalPages && (
           <PaginationItem>
-            <PaginationNext href={createPageUrl(currentPage + 1)} />
+            <PaginationNext
+              onClick={() => handlePageClick(currentPage + 1)}
+              className="cursor-pointer"
+            />
           </PaginationItem>
         )}
 
+        {/* pages */}
         {pagesArray.reverse().map((page) => {
           if (
             page === 1 ||
@@ -50,13 +50,13 @@ const DashboardPagination = ({
             return (
               <PaginationItem key={page}>
                 <PaginationLink
-                  href={createPageUrl(page)}
+                  onClick={() => handlePageClick(page)}
                   isActive={page === currentPage}
                   className={`${
                     page === currentPage
-                      ? "bg-primary text-white"
-                      : "bg-primary hover:bg-primary text-black transition-all ease-in"
-                  } flex_center rounded w-8 h-8`}
+                      ? "bg-[#3C3D45] text-white"
+                      : "bg-[#F7F7F8] hover:bg-[#efefef] text-[#6D6D74] transition-all ease-in"
+                  } flex_center rounded w-8 h-8 cursor-pointer font-normal text-sm`}
                 >
                   {page}
                 </PaginationLink>
@@ -86,7 +86,10 @@ const DashboardPagination = ({
         {/* prev page */}
         {currentPage > 1 && (
           <PaginationItem>
-            <PaginationPrevious href={createPageUrl(currentPage - 1)} />
+            <PaginationPrevious
+              onClick={() => handlePageClick(currentPage - 1)}
+              className="cursor-pointer"
+            />
           </PaginationItem>
         )}
       </PaginationContent>

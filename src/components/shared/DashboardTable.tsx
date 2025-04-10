@@ -13,7 +13,7 @@ import LoadingSpinner from "./LoadingSpinner";
 
 interface Props {
   products: IProducts[];
-  error: Error;
+  error: Error | null;
   isLoading: boolean;
 }
 

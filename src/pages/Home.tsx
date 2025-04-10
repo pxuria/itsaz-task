@@ -1,23 +1,28 @@
-import SidebarLayout from "@/components/shared/SidebarLayout";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { IoNotifications } from "react-icons/io5";
-import { LuMail } from "react-icons/lu";
-import SelectBox from "@/components/shared/SelectBox";
-import DashboardTable from "@/components/shared/DashboardTable";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useProducts } from "@/hooks/use-Products";
+import SelectBox from "@/components/shared/SelectBox";
+import SidebarLayout from "@/components/shared/SidebarLayout";
+import DashboardTable from "@/components/shared/DashboardTable";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardPagination from "@/components/shared/DashboardPagination";
-import { useState } from "react";
+import { LuMail } from "react-icons/lu";
+import { IoNotifications } from "react-icons/io5";
 
 const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const { data: products, error, isLoading } = useProducts("limit=10&skip=10");
   const location = useLocation();
 
   const pathname = location.pathname;
   const searchParams = location.search;
   console.log(pathname);
   console.log(searchParams);
+
+  const limit = 10;
+  const skip = (currentPage - 1) * limit;
+  const { data, error, isLoading } = useProducts(`limit=${limit}&skip=${skip}`);
+
+  const totalPages = data?.total ? Math.ceil(data.total / limit) : 1;
 
   return (
     <main className="w-full">
@@ -80,8 +85,8 @@ const Home = () => {
           {/* table */}
           <div className="mt-6">
             <DashboardTable
-              products={products?.products}
-              error={error as Error}
+              products={data?.products}
+              error={error}
               isLoading={isLoading}
             />
           </div>
@@ -91,9 +96,8 @@ const Home = () => {
 
             <DashboardPagination
               currentPage={currentPage}
-              totalPages={1}
-              searchParams={searchParams}
-              pathname={pathname}
+              totalPages={totalPages}
+              onPageChange={(page: number) => setCurrentPage(page)}
             />
           </div>
         </section>
