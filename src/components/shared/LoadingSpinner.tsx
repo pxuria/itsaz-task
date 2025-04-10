@@ -8,16 +8,17 @@ const override: CSSProperties = {
 
 interface LoadingSpinnerProps {
   color: string;
-  loading: boolean;
+  loading?: boolean;
+  size?: number;
 }
 
-const LoadingSpinner = ({ color, loading }: LoadingSpinnerProps) => {
+const LoadingSpinner = ({ color, loading, size = 15 }: LoadingSpinnerProps) => {
   return (
     <ClipLoader
       loading={loading}
       cssOverride={override}
       color={color}
-      size={15}
+      size={size}
       aria-label="Loading Spinner"
       data-testid="loader"
     />

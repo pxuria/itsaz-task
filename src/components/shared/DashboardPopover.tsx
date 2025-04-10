@@ -3,19 +3,37 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+// import axiosInstance from "@/lib/axiosInstance";
 import { LuTrash2 } from "react-icons/lu";
 
 interface PopupProps {
   openPopoverId: number | null;
   itemId: number;
   setOpenPopoverId: (val: number | null) => void;
+  refetch: () => void;
+  resetFilters: () => void;
 }
 
 const DashboardPopover = ({
   openPopoverId,
   itemId,
   setOpenPopoverId,
+  refetch,
+  resetFilters,
 }: PopupProps) => {
+  const handleDelete = async () => {
+    try {
+      //   const { data } = await axiosInstance.delete(`products/${itemId}`);
+      //   console.log(data);
+
+      resetFilters();
+      refetch();
+      setOpenPopoverId(null); // Close the popover
+    } catch (error) {
+      console.error("Failed to delete:", error);
+    }
+  };
+
   return (
     <Popover
       open={openPopoverId === itemId}
@@ -38,15 +56,16 @@ const DashboardPopover = ({
 
         <div className="flex_center flex-nowrap gap-2 mt-3">
           <button
-            className="cursor-pointer rounded text-sm text-nowrap font-medium py-1 px-4 text-white bg-[#AEAEB1]"
             type="button"
             onClick={() => setOpenPopoverId(null)}
+            className="cursor-pointer rounded text-sm text-nowrap font-medium py-1 px-4 text-white bg-[#AEAEB1]"
           >
             انصراف
           </button>
           <button
-            className="cursor-pointer rounded text-sm text-nowrap font-medium py-1 px-4 text-white bg-[#FF4040]"
             type="button"
+            onClick={handleDelete}
+            className="cursor-pointer rounded text-sm text-nowrap font-medium py-1 px-4 text-white bg-[#FF4040]"
           >
             حذف
           </button>

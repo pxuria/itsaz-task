@@ -272,7 +272,6 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      {/* <PanelLeftIcon /> */}
       <img
         src={sidebarSVG}
         alt="sidebar-menu"
