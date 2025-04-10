@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useProducts } from "@/hooks/use-Products";
 import DashboardTable from "@/components/shared/DashboardTable";
@@ -12,26 +12,27 @@ import { DASHBOARD_DEFAULT_LIMIT } from "@/constants";
 const Home = () => {
   const navigate = useNavigate();
   const { open: isSidebarOpen } = useSidebar();
-
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     searchParams.get("category")
   );
 
+  const skip = parseInt(searchParams.get("skip") || "0", 10);
   const limit = parseInt(
     searchParams.get("limit") || `${DASHBOARD_DEFAULT_LIMIT}`,
     10
   );
-  const skip = parseInt(searchParams.get("skip") || "0", 10);
 
   const [validLimit, setValidLimit] = useState<number>(
     isNaN(limit) || limit < 1 ? DASHBOARD_DEFAULT_LIMIT : limit
   );
 
-  // const validLimit = isNaN(limit) || limit < 1 ? DEFAULT_LIMIT : limit;
   const validSkip = isNaN(skip) || skip < 0 ? 0 : skip;
 
-  const currentPage = Math.floor(validSkip / validLimit) + 1;
+  const currentPage = useMemo(
+    () => Math.floor(validSkip / validLimit) + 1,
+    [validSkip, validLimit]
+  );
 
   const categoryPath = useMemo(
     () => (selectedCategory ? `/category/${selectedCategory}` : ""),
@@ -46,9 +47,12 @@ const Home = () => {
     `${categoryPath}${queryParams}`
   );
 
-  const totalPages = data?.total ? Math.ceil(data.total / validLimit) : 1;
+  const totalPages = useMemo(
+    () => (data?.total ? Math.ceil(data.total / validLimit) : 1),
+    [data?.total, validLimit]
+  );
 
-  const resetFilters = () => {
+  const resetFilters = useCallback(() => {
     const params = new URLSearchParams();
     params.set("limit", DASHBOARD_DEFAULT_LIMIT.toString());
     params.set("skip", "0");
@@ -56,20 +60,23 @@ const Home = () => {
     navigate("/");
     setSearchParams(params);
     setSelectedCategory(null);
-  };
+  }, [navigate, setSearchParams]);
 
-  const handlePageChange = (page: number) => {
-    const newSkip = (page - 1) * validLimit;
-    const params = new URLSearchParams(searchParams);
-    params.set("skip", newSkip.toString());
-    params.set("limit", validLimit.toString());
-    if (selectedCategory) {
-      params.set("category", selectedCategory);
-    }
-    setSearchParams(params);
-  };
+  const handlePageChange = useCallback(
+    (page: number) => {
+      const newSkip = (page - 1) * validLimit;
+      const params = new URLSearchParams(searchParams);
+      params.set("skip", newSkip.toString());
+      params.set("limit", validLimit.toString());
+      if (selectedCategory) {
+        params.set("category", selectedCategory);
+      }
+      setSearchParams(params);
+    },
+    [validLimit, searchParams, selectedCategory, setSearchParams]
+  );
 
-  const handleApplyFilter = () => {
+  const handleApplyFilter = useCallback(() => {
     const params = new URLSearchParams(searchParams);
     if (selectedCategory) {
       params.set("category", selectedCategory);
@@ -78,33 +85,31 @@ const Home = () => {
     }
     params.set("skip", "0"); // reset to first page
     setSearchParams(params);
-  };
+  }, [searchParams, selectedCategory, setSearchParams]);
 
-  const handleClearFilter = () => {
+  const handleClearFilter = useCallback(() => {
     setSelectedCategory(null);
     const params = new URLSearchParams(searchParams);
     params.delete("category");
     params.set("skip", "0");
     setSearchParams(params);
-  };
+  }, [searchParams, setSearchParams]);
 
   // Sync state when URL changes (e.g., from browser nav)
   useEffect(() => {
     setSelectedCategory(searchParams.get("category"));
-  }, [searchParams]);
 
-  useEffect(() => {
-    const hasLimit = searchParams.has("limit");
-    const hasSkip = searchParams.has("skip");
-
-    if (!hasLimit || !hasSkip) {
-      const params = new URLSearchParams(searchParams);
-
-      if (!hasLimit) params.set("limit", DASHBOARD_DEFAULT_LIMIT.toString());
-      if (!hasSkip) params.set("skip", "0");
-
-      setSearchParams(params);
+    const params = new URLSearchParams(searchParams);
+    let needsUpdate = false;
+    if (!searchParams.has("limit")) {
+      params.set("limit", DASHBOARD_DEFAULT_LIMIT.toString());
+      needsUpdate = true;
     }
+    if (!searchParams.has("skip")) {
+      params.set("skip", "0");
+      needsUpdate = true;
+    }
+    if (needsUpdate) setSearchParams(params);
   }, [searchParams, setSearchParams]);
 
   return (
