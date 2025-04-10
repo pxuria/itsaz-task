@@ -4,8 +4,21 @@ import { IoNotifications } from "react-icons/io5";
 import { LuMail } from "react-icons/lu";
 import SelectBox from "@/components/shared/SelectBox";
 import DashboardTable from "@/components/shared/DashboardTable";
+import { useLocation } from "react-router-dom";
+import { useProducts } from "@/hooks/use-Products";
+import DashboardPagination from "@/components/shared/DashboardPagination";
+import { useState } from "react";
 
 const Home = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data: products, error, isLoading } = useProducts();
+  const location = useLocation();
+
+  const pathname = location.pathname;
+  const searchParams = location.search;
+  console.log(pathname);
+  console.log(searchParams);
+
   return (
     <main className="w-full">
       <SidebarProvider>
@@ -66,7 +79,22 @@ const Home = () => {
 
           {/* table */}
           <div className="mt-6">
-            <DashboardTable />
+            <DashboardTable
+              products={products?.products}
+              error={error as Error}
+              isLoading={isLoading}
+            />
+          </div>
+
+          <div className="flex_center_between w-full my-4">
+            <DashboardPagination
+              currentPage={currentPage}
+              totalPages={1}
+              searchParams={searchParams}
+              pathname={pathname}
+            />
+
+            <div className="">{currentPage}</div>
           </div>
         </section>
       </SidebarProvider>

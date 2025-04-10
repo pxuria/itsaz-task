@@ -6,13 +6,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useProducts } from "@/hooks/use-Products";
+import { dashboardTableHeaders } from "@/constants";
 import { IProducts } from "@/types";
 import { LuTrash2 } from "react-icons/lu";
 
-const DashboardTable = () => {
-  const { data: products, error, isLoading } = useProducts();
+interface Props {
+  products: IProducts[];
+  error: Error;
+  isLoading: boolean;
+}
 
+const DashboardTable = ({ products, error, isLoading }: Props) => {
+  console.log(products);
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Something went wrong!</p>;
 
@@ -20,18 +25,17 @@ const DashboardTable = () => {
     <Table>
       <TableHeader>
         <TableRow className="bg-[#1E1E6E]! h-16">
-          <TableHead className="">ردیف</TableHead>
-          <TableHead className="">نام</TableHead>
-          <TableHead className="">دسته بندی</TableHead>
-          <TableHead className="">قیمت</TableHead>
-          <TableHead className="">برند</TableHead>
-          <TableHead className="">حذف کردن</TableHead>
+          {dashboardTableHeaders.map((item, index) => (
+            <TableHead className="" key={index}>
+              {item}
+            </TableHead>
+          ))}
         </TableRow>
       </TableHeader>
 
       <TableBody>
-        {products.products.map((item: IProducts, index: number) => (
-          <TableRow key={item._id} className="h-16 w-full">
+        {products.map((item: IProducts, index: number) => (
+          <TableRow key={index} className="h-16 w-full even:bg-[#E8E8E8]!">
             <TableCell className="">{index + 1}</TableCell>
             <TableCell className="">{item.title}</TableCell>
             <TableCell>{item.category}</TableCell>
