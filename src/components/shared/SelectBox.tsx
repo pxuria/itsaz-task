@@ -7,19 +7,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCategories } from "@/hooks/useCategory";
 import LoadingSpinner from "./LoadingSpinner";
 
 interface Props {
   label: string;
   placeholder: string;
   value: string;
-  onValueChange: (value: string) => void;
+  data: string[];
+  isLoading?: boolean;
+  error?: Error | null;
+  onValueChange: (value: string | number) => void;
 }
 
-const SelectBox = ({ label, placeholder, value, onValueChange }: Props) => {
-  const { data: selectItems, isLoading, error } = useCategories();
-
+const SelectBox = ({
+  label,
+  placeholder,
+  value,
+  onValueChange,
+  data,
+  isLoading,
+  error,
+}: Props) => {
   if (isLoading) return <LoadingSpinner color="#F67C2D" loading={isLoading} />;
   if (error) return <p>Something went wrong!</p>;
 
@@ -32,7 +40,7 @@ const SelectBox = ({ label, placeholder, value, onValueChange }: Props) => {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>{label}</SelectLabel>
-          {selectItems.map((item: string, index: number) => (
+          {data.map((item, index) => (
             <SelectItem key={index} value={item}>
               {item}
             </SelectItem>

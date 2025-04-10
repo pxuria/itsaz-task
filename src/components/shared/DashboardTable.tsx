@@ -10,6 +10,11 @@ import { dashboardTableHeaders } from "@/constants";
 import { IProducts } from "@/types";
 import { LuTrash2 } from "react-icons/lu";
 import LoadingSpinner from "./LoadingSpinner";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface Props {
   products: IProducts[];
@@ -43,12 +48,22 @@ const DashboardTable = ({ products, error, isLoading }: Props) => {
             <TableCell>{item.price}</TableCell>
             <TableCell>{item.brand || "-"}</TableCell>
             <TableCell className="flex_center">
-              <button
-                type="button"
-                className="bg-[rgb(255,64,64,0.3)] p-2 rounded w-fit cursor-pointer"
-              >
-                <LuTrash2 className="w-4 h-4 text-[#FF4040]" />
-              </button>
+              <Popover>
+                <PopoverTrigger>
+                  <button
+                    type="button"
+                    className="bg-[rgb(255,64,64,0.3)] p-2 rounded w-fit cursor-pointer"
+                  >
+                    <LuTrash2 className="w-4 h-4 text-[#FF4040]" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="max-w-[10rem] relative overflow-hidden border-0">
+                  <div className="absolute bg-[#FF4040] w-full top-0 left-0 h-1" />
+                  Place content for the popover here.
+                  <button className="" type="button"></button>
+                  <button className="" type="button"></button>
+                </PopoverContent>
+              </Popover>
             </TableCell>
           </TableRow>
         ))}
