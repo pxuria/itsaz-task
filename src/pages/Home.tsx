@@ -139,6 +139,7 @@ const Home = () => {
             selectedCategory={selectedCategory}
           />
         </div>
+
         {/* table */}
         <div className="mt-6">
           <DashboardTable
@@ -149,6 +150,7 @@ const Home = () => {
             resetFilters={resetFilters}
           />
         </div>
+
         {/* pagination */}
         <div className="flex_center_between w-full my-4">
           <SelectBox

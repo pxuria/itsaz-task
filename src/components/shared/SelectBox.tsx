@@ -9,10 +9,10 @@ import {
 import LoadingSpinner from "./LoadingSpinner";
 
 interface Props {
-  label?: string;
-  placeholder: string;
   value: string;
+  label?: string;
   data: string[];
+  placeholder: string;
   isLoading?: boolean;
   error?: Error | null;
   triggerClass?: string;
@@ -35,22 +35,32 @@ const SelectBox = ({
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label className="text-sm font-medium text-[#3C3D45] text-nowrap">
+        <label
+          htmlFor={label}
+          className="text-sm font-medium text-[#3C3D45] text-nowrap"
+        >
           {label}
         </label>
       )}
+
       <Select value={value} onValueChange={onValueChange}>
-        <SelectTrigger className={triggerClass}>
+        <SelectTrigger className={triggerClass} id={label}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
 
         <SelectContent>
           <SelectGroup>
-            {data.map((item, index) => (
-              <SelectItem key={index} value={item}>
-                {item}
-              </SelectItem>
-            ))}
+            {data.length > 0 ? (
+              data.map((item) => (
+                <SelectItem key={item} value={item}>
+                  {item}
+                </SelectItem>
+              ))
+            ) : (
+              <div className="px-4 py-2 text-sm text-gray-500">
+                هیچ گزینه‌ای موجود نیست
+              </div>
+            )}
           </SelectGroup>
         </SelectContent>
       </Select>

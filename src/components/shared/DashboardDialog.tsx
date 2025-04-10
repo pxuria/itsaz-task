@@ -9,8 +9,8 @@ import { IProducts } from "@/types";
 
 interface DialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
   product: IProducts | null;
+  onOpenChange: (open: boolean) => void;
 }
 
 const DashboardDialog = ({ open, onOpenChange, product }: DialogProps) => {

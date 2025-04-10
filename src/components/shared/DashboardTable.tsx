@@ -9,9 +9,9 @@ import {
 } from "@/components/ui/table";
 import LoadingSpinner from "./LoadingSpinner";
 import DashboardPopover from "./DashboardPopover";
+import DashboardDialog from "./DashboardDialog";
 import { IProducts } from "@/types";
 import { dashboardTableHeaders } from "@/constants";
-import DashboardDialog from "./DashboardDialog";
 
 interface TableProps {
   products: IProducts[];
@@ -32,6 +32,11 @@ const DashboardTable = ({
   const [openProduct, setOpenProduct] = useState<IProducts | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  const handleRowDoubleClick = (product: IProducts) => {
+    setOpenProduct(product);
+    setIsDialogOpen(true);
+  };
+
   console.log(products);
   if (isLoading) return <LoadingSpinner color="#F67C2D" loading={isLoading} />;
   if (error) return <p>Something went wrong!</p>;
@@ -41,10 +46,8 @@ const DashboardTable = ({
       <Table>
         <TableHeader>
           <TableRow className="bg-[#1E1E6E]! h-16">
-            {dashboardTableHeaders.map((item, index) => (
-              <TableHead className="" key={index}>
-                {item}
-              </TableHead>
+            {dashboardTableHeaders.map((header, index) => (
+              <TableHead key={index}>{header}</TableHead>
             ))}
           </TableRow>
         </TableHeader>
@@ -54,10 +57,7 @@ const DashboardTable = ({
             <TableRow
               key={index}
               className="h-16 w-full even:bg-[#E8E8E8]!"
-              onDoubleClick={() => {
-                setOpenProduct(item);
-                setIsDialogOpen(true);
-              }}
+              onDoubleClick={() => handleRowDoubleClick(item)}
             >
               <TableCell>{item.id}</TableCell>
               <TableCell>{item.title}</TableCell>
