@@ -105,9 +105,9 @@ const Home = () => {
           <div className="flex_center_between w-full my-4">
             <SelectBox
               placeholder="انتخاب دسته بندی"
-              label="دسته بندی"
               value={validLimit.toString()}
               onValueChange={(value) => setValidLimit(Number(value))}
+              triggerClass="w-fit"
               data={["10", "15", "20", "25", "35", "50"]}
             />
 

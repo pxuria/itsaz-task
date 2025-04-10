@@ -3,19 +3,19 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import LoadingSpinner from "./LoadingSpinner";
 
 interface Props {
-  label: string;
+  label?: string;
   placeholder: string;
   value: string;
   data: string[];
   isLoading?: boolean;
   error?: Error | null;
+  triggerClass?: string;
   onValueChange: (value: string | number) => void;
 }
 
@@ -25,6 +25,7 @@ const SelectBox = ({
   value,
   onValueChange,
   data,
+  triggerClass = "w-[220px]",
   isLoading,
   error,
 }: Props) => {
@@ -32,22 +33,28 @@ const SelectBox = ({
   if (error) return <p>Something went wrong!</p>;
 
   return (
-    <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="w-[220px]">
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
+    <div className="flex flex-col gap-1">
+      {label && (
+        <label className="text-sm font-medium text-[#3C3D45] text-nowrap">
+          {label}
+        </label>
+      )}
+      <Select value={value} onValueChange={onValueChange}>
+        <SelectTrigger className={triggerClass}>
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
 
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>{label}</SelectLabel>
-          {data.map((item, index) => (
-            <SelectItem key={index} value={item}>
-              {item}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+        <SelectContent>
+          <SelectGroup>
+            {data.map((item, index) => (
+              <SelectItem key={index} value={item}>
+                {item}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
   );
 };
 

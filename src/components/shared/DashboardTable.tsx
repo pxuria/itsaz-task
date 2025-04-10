@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -6,15 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { dashboardTableHeaders } from "@/constants";
-import { IProducts } from "@/types";
-import { LuTrash2 } from "react-icons/lu";
 import LoadingSpinner from "./LoadingSpinner";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import DashboardPopover from "./DashboardPopover";
+import { IProducts } from "@/types";
+import { dashboardTableHeaders } from "@/constants";
 
 interface Props {
   products: IProducts[];
@@ -23,6 +19,7 @@ interface Props {
 }
 
 const DashboardTable = ({ products, error, isLoading }: Props) => {
+  const [openPopoverId, setOpenPopoverId] = useState<number | null>(null);
   console.log(products);
   if (isLoading) return <LoadingSpinner color="#F67C2D" loading={isLoading} />;
   if (error) return <p>Something went wrong!</p>;
@@ -48,22 +45,11 @@ const DashboardTable = ({ products, error, isLoading }: Props) => {
             <TableCell>{item.price}</TableCell>
             <TableCell>{item.brand || "-"}</TableCell>
             <TableCell className="flex_center">
-              <Popover>
-                <PopoverTrigger>
-                  <button
-                    type="button"
-                    className="bg-[rgb(255,64,64,0.3)] p-2 rounded w-fit cursor-pointer"
-                  >
-                    <LuTrash2 className="w-4 h-4 text-[#FF4040]" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="max-w-[10rem] relative overflow-hidden border-0">
-                  <div className="absolute bg-[#FF4040] w-full top-0 left-0 h-1" />
-                  Place content for the popover here.
-                  <button className="" type="button"></button>
-                  <button className="" type="button"></button>
-                </PopoverContent>
-              </Popover>
+              <DashboardPopover
+                openPopoverId={openPopoverId}
+                itemId={Number(item.id)}
+                setOpenPopoverId={setOpenPopoverId}
+              />
             </TableCell>
           </TableRow>
         ))}
