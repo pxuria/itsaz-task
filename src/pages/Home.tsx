@@ -1,17 +1,20 @@
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useProducts } from "@/hooks/use-Products";
 import SelectBox from "@/components/shared/SelectBox";
 import SidebarLayout from "@/components/shared/SidebarLayout";
 import DashboardTable from "@/components/shared/DashboardTable";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import DashboardPagination from "@/components/shared/DashboardPagination";
-import { LuMail } from "react-icons/lu";
-import { IoNotifications } from "react-icons/io5";
+import Topbar from "@/components/shared/Topbar";
 
 const DEFAULT_LIMIT = 10;
 
 const Home = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    searchParams.get("category")
+  );
 
   const limit = parseInt(searchParams.get("limit") || `${DEFAULT_LIMIT}`, 10);
   const skip = parseInt(searchParams.get("skip") || "0", 10);
@@ -21,8 +24,11 @@ const Home = () => {
 
   const currentPage = Math.floor(validSkip / validLimit) + 1;
 
+  const categoryPath = selectedCategory ? `/category/${selectedCategory}` : "";
+  const queryParams = `?limit=${validLimit}&skip=${validSkip}`;
+
   const { data, error, isLoading } = useProducts(
-    `limit=${validLimit}&skip=${validSkip}`
+    `${categoryPath}${queryParams}`
   );
 
   const totalPages = data?.total ? Math.ceil(data.total / validLimit) : 1;
@@ -32,8 +38,35 @@ const Home = () => {
     const params = new URLSearchParams(searchParams);
     params.set("skip", newSkip.toString());
     params.set("limit", validLimit.toString());
+    if (selectedCategory) {
+      params.set("category", selectedCategory);
+    }
     setSearchParams(params);
   };
+
+  const handleApplyFilter = () => {
+    const params = new URLSearchParams(searchParams);
+    if (selectedCategory) {
+      params.set("category", selectedCategory);
+    } else {
+      params.delete("category");
+    }
+    params.set("skip", "0"); // reset to first page
+    setSearchParams(params);
+  };
+
+  const handleClearFilter = () => {
+    setSelectedCategory(null);
+    const params = new URLSearchParams(searchParams);
+    params.delete("category");
+    params.set("skip", "0");
+    setSearchParams(params);
+  };
+
+  // Sync state when URL changes (e.g., from browser nav)
+  useEffect(() => {
+    setSelectedCategory(searchParams.get("category"));
+  }, [searchParams]);
 
   return (
     <main className="w-full">
@@ -42,52 +75,30 @@ const Home = () => {
 
         <section className="px-9 w-full mt-8">
           {/* topbar */}
-          <div className="flex_center_between">
-            <div className=" flex items-center gap-2">
-              <SidebarTrigger />
-
-              <h1 className="text-[#1e1e6e] font-bold text-lg text-nowrap">
-                داشبـورد کاربـر
-              </h1>
-
-              <span className="text-sm text-[#1E1E6E] bg-[#E0EEFF] px-4 py-1 rounded font-semibold">
-                کارمند
-              </span>
-            </div>
-
-            <div className="flex gap-2 items-center">
-              <button
-                className="p-2 rounded-md bg-[rgba(255,123,45,0.3)] cursor-pointer flex items-center justify-center"
-                type="button"
-              >
-                <IoNotifications className="w-5 h-5 text-[#FF7B2D]" />
-              </button>
-
-              <button
-                className="p-2 rounded-md bg-white outline-1 outline-amber-500 cursor-pointer flex items-center justify-center"
-                type="button"
-              >
-                <LuMail className="w-5 h-5 text-[#FF7B2D]" />
-              </button>
-            </div>
-          </div>
+          <Topbar />
 
           {/* filters */}
           <div className="flex_center_between flex-wrap md:flex-nowrap gap-4 mt-11">
-            <SelectBox placeholder="انتخاب دسته بندی" label="دسته بندی" />
+            <SelectBox
+              placeholder="انتخاب دسته بندی"
+              label="دسته بندی"
+              value={selectedCategory || ""}
+              onValueChange={(value) => setSelectedCategory(value)}
+            />
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center flex-wrap w-full md:w-fit lg:flex-nowrap gap-2">
               <button
                 type="button"
-                className="text-white text-base text-nowrap font-semibold bg-[#FF7B2D] py-2 px-6 rounded min-w-[250px] text-center cursor-pointer"
-                onClick={() => console.log("first")}
+                onClick={handleApplyFilter}
+                className="text-white text-base text-nowrap font-semibold bg-[#FF7B2D] py-2 px-6 rounded w-full md:min-w-[250px] text-center cursor-pointer"
               >
                 اعمال فیلتر
               </button>
 
               <button
                 type="button"
-                className="text-white text-base text-nowrap font-semibold bg-[#FF4040] py-2 px-6 rounded min-w-[80px] text-center cursor-pointer"
+                onClick={handleClearFilter}
+                className="text-white text-base text-nowrap font-semibold bg-[#FF4040] py-2 px-6 rounded w-full md:min-w-[80px] text-center cursor-pointer"
               >
                 حذف فیلتر
               </button>

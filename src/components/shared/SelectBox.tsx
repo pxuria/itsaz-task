@@ -13,16 +13,18 @@ import LoadingSpinner from "./LoadingSpinner";
 interface Props {
   label: string;
   placeholder: string;
+  value: string;
+  onValueChange: (value: string) => void;
 }
 
-const SelectBox = ({ label, placeholder }: Props) => {
+const SelectBox = ({ label, placeholder, value, onValueChange }: Props) => {
   const { data: selectItems, isLoading, error } = useCategories();
 
   if (isLoading) return <LoadingSpinner color="#F67C2D" loading={isLoading} />;
   if (error) return <p>Something went wrong!</p>;
 
   return (
-    <Select>
+    <Select value={value} onValueChange={onValueChange}>
       <SelectTrigger className="w-[220px]">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
