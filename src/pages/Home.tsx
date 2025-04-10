@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useProducts } from "@/hooks/use-Products";
 import SelectBox from "@/components/shared/SelectBox";
 import SidebarLayout from "@/components/shared/SidebarLayout";
@@ -9,25 +8,38 @@ import DashboardPagination from "@/components/shared/DashboardPagination";
 import { LuMail } from "react-icons/lu";
 import { IoNotifications } from "react-icons/io5";
 
+const DEFAULT_LIMIT = 10;
+
 const Home = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const pathname = location.pathname;
-  const searchParams = location.search;
-  console.log(pathname);
-  console.log(searchParams);
+  const limit = parseInt(searchParams.get("limit") || `${DEFAULT_LIMIT}`, 10);
+  const skip = parseInt(searchParams.get("skip") || "0", 10);
 
-  const limit = 10;
-  const skip = (currentPage - 1) * limit;
-  const { data, error, isLoading } = useProducts(`limit=${limit}&skip=${skip}`);
+  const validLimit = isNaN(limit) || limit < 1 ? DEFAULT_LIMIT : limit;
+  const validSkip = isNaN(skip) || skip < 0 ? 0 : skip;
 
-  const totalPages = data?.total ? Math.ceil(data.total / limit) : 1;
+  const currentPage = Math.floor(validSkip / validLimit) + 1;
+
+  const { data, error, isLoading } = useProducts(
+    `limit=${validLimit}&skip=${validSkip}`
+  );
+
+  const totalPages = data?.total ? Math.ceil(data.total / validLimit) : 1;
+
+  const handlePageChange = (page: number) => {
+    const newSkip = (page - 1) * validLimit;
+    const params = new URLSearchParams(searchParams);
+    params.set("skip", newSkip.toString());
+    params.set("limit", validLimit.toString());
+    setSearchParams(params);
+  };
 
   return (
     <main className="w-full">
       <SidebarProvider>
         <SidebarLayout />
+
         <section className="px-9 w-full mt-8">
           {/* topbar */}
           <div className="flex_center_between">
@@ -61,7 +73,7 @@ const Home = () => {
           </div>
 
           {/* filters */}
-          <div className="flex_center_between mt-11">
+          <div className="flex_center_between flex-wrap md:flex-nowrap gap-4 mt-11">
             <SelectBox placeholder="انتخاب دسته بندی" label="دسته بندی" />
 
             <div className="flex items-center gap-2">
@@ -91,13 +103,14 @@ const Home = () => {
             />
           </div>
 
+          {/* pagination */}
           <div className="flex_center_between w-full my-4">
-            <div className="">{currentPage}</div>
+            <div className="">{validLimit}</div>
 
             <DashboardPagination
               currentPage={currentPage}
               totalPages={totalPages}
-              onPageChange={(page: number) => setCurrentPage(page)}
+              onPageChange={handlePageChange}
             />
           </div>
         </section>

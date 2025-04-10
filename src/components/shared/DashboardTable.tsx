@@ -34,11 +34,11 @@ const DashboardTable = ({ products, error, isLoading }: Props) => {
         </TableRow>
       </TableHeader>
 
-      <TableBody>
+      <TableBody className="max-h-[50vh]">
         {products.map((item: IProducts, index: number) => (
           <TableRow key={index} className="h-16 w-full even:bg-[#E8E8E8]!">
-            <TableCell className="">{index + 1}</TableCell>
-            <TableCell className="">{item.title}</TableCell>
+            <TableCell>{item.id}</TableCell>
+            <TableCell>{item.title}</TableCell>
             <TableCell>{item.category}</TableCell>
             <TableCell>{item.price}</TableCell>
             <TableCell>{item.brand || "-"}</TableCell>
